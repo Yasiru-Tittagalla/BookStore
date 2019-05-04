@@ -42,6 +42,8 @@ import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
+import android.content.Intent;
+
 /**
  * A login screen that offers login via email/password.
  */
@@ -83,6 +85,7 @@ switch (v.getId()){
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         editTextUserName = (EditText) findViewById(R.id.editTextEmail);
 
+
         String email = editTextUserName.getText().toString();
         String password = editTextPassword.getText().toString();
 
@@ -111,8 +114,7 @@ switch (v.getId()){
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-//                     startActivity(new Intent(this,dashboardActivity.class));
-                    Toast.makeText(getApplicationContext(),task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(this,DashboardActivity.class));
                 }
                 else
                     Toast.makeText(getApplicationContext(),task.getException().getMessage(),Toast.LENGTH_SHORT).show();
