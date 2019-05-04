@@ -1,5 +1,6 @@
 package com.example.bookstore;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,7 +20,11 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class DashboardActivity extends AppCompatActivity {
+
+    FirebaseAuth mAuth;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -83,7 +88,10 @@ public class DashboardActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_logout) {
+            mAuth = FirebaseAuth.getInstance();
+            mAuth.signOut();
+            startActivity(new Intent(DashboardActivity.this, LoginActivity.class));
             return true;
         }
 

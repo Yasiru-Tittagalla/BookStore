@@ -110,11 +110,12 @@ switch (v.getId()){
             return;
         }
 
+        mAuth = FirebaseAuth.getInstance();
         mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    startActivity(new Intent(this,DashboardActivity.class));
+                    startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
                 }
                 else
                     Toast.makeText(getApplicationContext(),task.getException().getMessage(),Toast.LENGTH_SHORT).show();
