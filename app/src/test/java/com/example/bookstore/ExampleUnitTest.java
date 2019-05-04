@@ -1,4 +1,4 @@
-package com.sliit.bookstore;
+package com.example.bookstore;
 
 import org.junit.Test;
 
