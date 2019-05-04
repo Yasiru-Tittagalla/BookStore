@@ -111,7 +111,8 @@ switch (v.getId()){
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                     startActivity(new Intent(this,dashboardActivity.class));
+//                     startActivity(new Intent(this,dashboardActivity.class));
+                    Toast.makeText(getApplicationContext(),task.getException().getMessage(),Toast.LENGTH_SHORT).show();
                 }
                 else
                     Toast.makeText(getApplicationContext(),task.getException().getMessage(),Toast.LENGTH_SHORT).show();

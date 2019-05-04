@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="net.simplifiedlearning.firebaseauth.MainActivity">
+    android:orientation="vertical">
 
 
     <RelativeLayout
@@ -64,7 +63,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="7dp"
-                android:background="@drawable/rounded_button_transparent"
                 android:text="Login"
                 android:textAllCaps="false"
                 android:textColor="@color/colorAccent" />
