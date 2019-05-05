@@ -53,6 +53,12 @@ public class DashboardActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 
+        tabLayout.setupWithViewPager(mViewPager);
+        tabLayout.getTabAt(0).setIcon(R.drawable.baseline_home_white_48dp);
+        tabLayout.getTabAt(1).setIcon(R.drawable.baseline_search_white_48dp);
+        tabLayout.getTabAt(2).setIcon(R.drawable.baseline_bookmark_white_48dp);
+        tabLayout.getTabAt(3).setIcon(R.drawable.baseline_alarm_white_48dp);
+
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
