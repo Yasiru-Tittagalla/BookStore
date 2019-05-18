@@ -28,7 +28,7 @@ public class Tab2SearchActivity extends Fragment {
             public void onClick(View v) {
                 String text = searchText.getText().toString();
                 if(!text.isEmpty()){
-                    new FetchBooks(text).execute(text);
+                    new FetchBooks().execute(text);
                 } else {
                     Toast.makeText(getActivity(), "Please enter a book name", Toast.LENGTH_SHORT).show();
                 }
