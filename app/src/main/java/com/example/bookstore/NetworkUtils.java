@@ -1,3 +1,8 @@
+/*
+This is a helper class for the fetch books class
+this file manages all the connection items
+to get connected and fetch the details from the API
+ */
 package com.example.bookstore;
 
 import android.net.Uri;
@@ -19,14 +24,15 @@ public class NetworkUtils {
     private static final String MAX_RESULTS = "maxResults";
     private static final String PRINT_TYPE = "printType";
 
+    // this is the method that will return the information of the book
     static String getBookInfo(String queryString) {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String bookJSONString = null;
 
         try {
-            // biuld the query string URI
-            // limitng results to 10 items
+            // build the query string URI
+            // limiting results to 10 items
             Uri builtUrl = Uri.parse(BASE_URL).buildUpon()
                     .appendQueryParameter(QUERY_PARAM, queryString)
                     .appendQueryParameter(MAX_RESULTS, "10")

@@ -1,3 +1,8 @@
+/*
+This is the signup activity
+it registers a user on the database
+ */
+
 package com.example.bookstore;
 
 import android.content.Intent;

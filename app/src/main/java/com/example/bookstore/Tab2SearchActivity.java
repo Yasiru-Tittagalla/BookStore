@@ -1,3 +1,10 @@
+/*
+This file is for the tab 2
+which is for the search tab
+when the user search for a book title,
+it gets the book data from the google api
+ */
+
 package com.example.bookstore;
 
 import android.content.Context;
@@ -20,6 +27,7 @@ public class Tab2SearchActivity extends Fragment {
     private EditText searchText;
     private Button searchButton;
 
+    // when the activity is created, run this method
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

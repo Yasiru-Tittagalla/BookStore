@@ -1,7 +1,11 @@
+/*
+This file helps the activities to
+fetch books from the book api
+ */
+
 package com.example.bookstore;
 
 import android.os.AsyncTask;
-import android.widget.TextView;
 
 public class FetchBooks extends AsyncTask<String, Void, String> {
 

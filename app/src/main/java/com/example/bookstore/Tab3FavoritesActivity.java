@@ -1,3 +1,12 @@
+/*
+This file is for the tab 3
+which is for the favorites tab
+it loads the logged in user's favorites
+from the database
+The user can insert, update, delete his favorites
+from this activity
+ */
+
 package com.example.bookstore;
 
 import android.os.Bundle;
