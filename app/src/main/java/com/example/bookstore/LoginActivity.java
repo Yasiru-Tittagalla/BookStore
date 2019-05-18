@@ -13,8 +13,12 @@ import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +52,16 @@ public class LoginActivity extends AppCompatActivity  implements OnClickListener
 
 
       });
+
+        // logo icon rotation
+        RotateAnimation rotate = new RotateAnimation(0, 360,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setDuration(5000);
+        rotate.setInterpolator(new LinearInterpolator());
+        rotate.setRepeatCount(Animation.INFINITE);
+
+        ImageView image= (ImageView) findViewById(R.id.logoImage);
+        image.startAnimation(rotate);
     }
 
     // starting sign up activity onclick
