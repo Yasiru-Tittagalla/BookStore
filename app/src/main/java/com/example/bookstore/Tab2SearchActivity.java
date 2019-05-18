@@ -40,9 +40,11 @@ public class Tab2SearchActivity extends Fragment {
             public void onClick(View v) {
 
                 // hide the keyboard after searching
-                InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
-                        inputMethodManager.HIDE_NOT_ALWAYS);
+                if (getActivity().getCurrentFocus() != null) {
+                    InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                            inputMethodManager.HIDE_NOT_ALWAYS);
+                }
 
                 // check network state
                 ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
