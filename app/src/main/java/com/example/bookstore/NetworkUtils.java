@@ -33,7 +33,8 @@ public class NetworkUtils {
         try {
             // build the query string URI
             // limiting results to 10 items
-            Uri builtUrl = Uri.parse(BASE_URL).buildUpon()
+            Uri builtUrl = Uri.parse(BASE_URL)
+                    .buildUpon()
                     .appendQueryParameter(QUERY_PARAM, queryString)
                     .appendQueryParameter(MAX_RESULTS, "10")
                     .appendQueryParameter(PRINT_TYPE, "books")
