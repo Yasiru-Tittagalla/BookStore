@@ -1,3 +1,10 @@
+/*
+This file is for the tab 4
+which is for the reminder tab
+if the user needs a reminder to read a book,
+this activity tab will memorize it and remind on time
+ */
+
 package com.example.bookstore;
 
 import android.os.Bundle;
