@@ -1,6 +1,8 @@
 package com.example.bookstore;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -29,10 +31,18 @@ public class Tab2SearchActivity extends Fragment {
             @Override
             public void onClick(View v) {
 
-                // to hide the keyboard
+                // hide the keyboard after searching
                 InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
                         inputMethodManager.HIDE_NOT_ALWAYS);
+
+                // check network state
+                ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                if(networkInfo == null || !networkInfo.isConnected()) {
+                    Toast.makeText(getActivity(), "Please check the network connection", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 // to search the book
                 String text = searchText.getText().toString();
