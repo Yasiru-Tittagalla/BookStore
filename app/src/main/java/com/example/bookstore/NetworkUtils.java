@@ -8,6 +8,8 @@ package com.example.bookstore;
 import android.net.Uri;
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +19,8 @@ import java.net.URL;
 
 public class NetworkUtils {
 
+    public static String bookJSONString = null;
+    public static JSONObject jsonObject = null;
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
     // base URL for the books API
     private static final String BASE_URL = "https://www.googleapis.com/books/v1/volumes?";
@@ -28,7 +32,6 @@ public class NetworkUtils {
     static String getBookInfo(String queryString) {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
-        String bookJSONString = null;
 
         try {
             // build the query string URI
