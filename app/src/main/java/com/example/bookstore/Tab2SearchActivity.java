@@ -27,6 +27,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,7 +49,7 @@ public class Tab2SearchActivity extends Fragment {
     JSONObject jsonObject;
     JSONArray jsonArray;
     BookAdapter bookAdapter;
-
+    ProgressBar progressBar;
 
     // when the activity is created, run this method
     @Override
@@ -60,6 +61,7 @@ public class Tab2SearchActivity extends Fragment {
         final ListView listView = rootView.findViewById(R.id.listView);
         searchText = (EditText)rootView.findViewById(R.id.editText2);
         searchButton = (Button)rootView.findViewById(R.id.button);
+//         progressBar = rootView.findViewById(R.id.progressbar);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,9 +74,12 @@ public class Tab2SearchActivity extends Fragment {
                 }
 
                 // check network state
+                //loading bar while data are being fetched
+//                progressBar.setVisibility(View.VISIBLE);
                 ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
                 if(networkInfo == null || !networkInfo.isConnected()) {
+//                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(getActivity(), "Please check the network connection", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -117,10 +122,8 @@ public class Tab2SearchActivity extends Fragment {
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
+//                                    progressBar.setVisibility(View.GONE);
 
-                                    if (title != null) {
-                                        Toast.makeText(getActivity(), "Title of the book is"+title, Toast.LENGTH_SHORT).show();
-                                    }
                                 }
                             } catch(Exception e) {
                                 e.printStackTrace();
