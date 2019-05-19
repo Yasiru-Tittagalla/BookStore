@@ -25,16 +25,17 @@ public class Tab1HomeActivity extends Fragment {
         View rootView = inflater.inflate(R.layout.tab1_home, container, false);
 
         // get books from the api
-        new FetchBooks().execute("super");
+        new FetchBooks().execute("spider man");
 
         // wait till the api call is over
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.d(LOG_TAG, NetworkUtils.bookJSONString);
-            }
-        }, 5000);
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                Log.d(LOG_TAG, NetworkUtils.bookJSONString);
+//            }
+//        }, 5000);
+
         return rootView;
     }
 

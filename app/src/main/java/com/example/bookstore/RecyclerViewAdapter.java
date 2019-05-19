@@ -1,6 +1,7 @@
 package com.example.bookstore;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.net.URI;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
 
@@ -27,6 +30,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
+
+        // set the datae here
+        myViewHolder.book_title.setText("Game of Thrones");
+        Uri imageUri = Uri.parse("https://books.google.com/books/content?id=BWXhBQAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api");
+        myViewHolder.book_thumbnail.setImageURI(imageUri);
 
     }
 
