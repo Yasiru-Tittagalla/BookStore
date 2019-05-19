@@ -65,7 +65,6 @@ public class DashboardActivity extends AppCompatActivity {
         tabLayout.getTabAt(0).setIcon(R.drawable.baseline_home_white_48dp);
         tabLayout.getTabAt(1).setIcon(R.drawable.baseline_search_white_48dp);
         tabLayout.getTabAt(2).setIcon(R.drawable.baseline_bookmark_white_48dp);
-        tabLayout.getTabAt(3).setIcon(R.drawable.baseline_alarm_white_48dp);
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
@@ -118,9 +117,6 @@ public class DashboardActivity extends AppCompatActivity {
                     Tab2SearchActivity tab2 = new Tab2SearchActivity();
                     return tab2;
                 case 2:
-                    Tab3FavoritesActivity tab3 = new Tab3FavoritesActivity();
-                    return tab3;
-                case 3:
                     Tab4ReminderActivity tab4 = new Tab4ReminderActivity();
                     return tab4;
                 default:
@@ -131,7 +127,7 @@ public class DashboardActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 4 total pages.
-            return 4;
+            return 3;
         }
     }
 }
