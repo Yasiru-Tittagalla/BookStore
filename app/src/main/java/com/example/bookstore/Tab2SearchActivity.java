@@ -14,6 +14,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -93,42 +94,42 @@ public class Tab2SearchActivity extends Fragment {
                         @Override
                         public void run() {
 
-                            String Books = NetworkUtils.bookJSONString;
+                    String Books = NetworkUtils.bookJSONString;
 
-                            try {
-                                JSONObject jsonObject = new JSONObject(Books);
-                                JSONArray itemsArray = jsonObject.getJSONArray("items");
-                                 bookAdapter = new BookAdapter(getContext(),R.layout.row_layout);
-                                listView.setAdapter(bookAdapter);
+                    try {
+                        JSONObject jsonObject = new JSONObject(Books);
+                        JSONArray itemsArray = jsonObject.getJSONArray("items");
+                         bookAdapter = new BookAdapter(getContext(),R.layout.row_layout);
+                        listView.setAdapter(bookAdapter);
 //                        Log.d(LOG_TAG, "item length is " + itemsArray.length());
 
-                                for (int i = 0; i < itemsArray.length(); i++) {
-                                    JSONObject book = itemsArray.getJSONObject(i);
-                                    String title = null;
-                                    String imageUrl =null;
-                                    String description = null;
-                                    JSONObject volumeInfo = book.getJSONObject("volumeInfo");
+                        for (int i = 0; i < itemsArray.length(); i++) {
+                            JSONObject book = itemsArray.getJSONObject(i);
+                            String title = null;
+                            String imageUrl =null;
+                            String description = null;
+                            JSONObject volumeInfo = book.getJSONObject("volumeInfo");
 
 
-                                    try {
-                                        title = volumeInfo.getString("title");
-                                        description = volumeInfo.getString("description");
-                                        JSONObject imageObject = volumeInfo.optJSONObject("imageLinks");
-                                            imageUrl = imageObject.getString("smallThumbnail");
+                            try {
+                                title = volumeInfo.getString("title");
+                                description = volumeInfo.getString("description");
+                                JSONObject imageObject = volumeInfo.optJSONObject("imageLinks");
+                                    imageUrl = imageObject.getString("thumbnail");
 
-                                            Books books = new Books(title,description,imageUrl);
-                                            bookAdapter.add(books);
+                                    Books books = new Books(title,description,imageUrl);
+                                    bookAdapter.add(books);
 
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
 //                                    progressBar.setVisibility(View.GONE);
 
-                                }
-                            } catch(Exception e) {
-                                e.printStackTrace();
-                                Toast.makeText(getActivity(), "Nothing Found", Toast.LENGTH_SHORT).show();
-                            }
+                        }
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(getActivity(), "Nothing Found", Toast.LENGTH_SHORT).show();
+                    }
 
                         }
                     }, 5000);
@@ -197,21 +198,7 @@ public class Tab2SearchActivity extends Fragment {
             Books books = (Books) getItem(position);
             bookHolder.textView2.setText(books.getTitle());
             bookHolder.textView3.setText(books.getDescription());
-//            bookHolder.imageView.setText(books.getImageUrl());
-            URL imageUrl = null;
-            try {
-                imageUrl = new URL(books.getImageUrl());
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            Bitmap bitmap = null;
-            try {
-                bitmap = BitmapFactory.decodeStream(imageUrl.openConnection().getInputStream());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            bookHolder.imageView.setImageBitmap(bitmap);
-//            Picasso.get().load(books.getImageUrl()).into(bookHolder.imageView);
+            Picasso.get().load(books.getImageUrl()).into(bookHolder.imageView);
             return row;
         }
 
