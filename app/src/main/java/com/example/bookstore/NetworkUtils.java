@@ -39,7 +39,7 @@ public class NetworkUtils {
             Uri builtUrl = Uri.parse(BASE_URL)
                     .buildUpon()
                     .appendQueryParameter(QUERY_PARAM, queryString)
-                    .appendQueryParameter(MAX_RESULTS, "10")
+                    .appendQueryParameter(MAX_RESULTS, "21")
                     .appendQueryParameter(PRINT_TYPE, "books")
                     .build();
 
@@ -60,7 +60,6 @@ public class NetworkUtils {
                 buffer.append(line + "\n");
             }
             if (buffer.length() == 0) {
-                // stream is empty
                 return null;
             }
             bookJSONString = buffer.toString();
@@ -79,7 +78,7 @@ public class NetworkUtils {
                     e.printStackTrace();
                 }
             }
-            Log.d(LOG_TAG, bookJSONString);
+//            Log.d(LOG_TAG, bookJSONString);
             return bookJSONString;
         }
     }
