@@ -47,9 +47,11 @@ public class LoginActivity extends AppCompatActivity  implements OnClickListener
     SignInButton signInButton;
     FirebaseAuth mAuth;
     GoogleApiClient googleApiClient;
-    EditText editTextPassword, editTextUserName;
+    public EditText editTextPassword, editTextUserName;
     private static  final  String TAG = "SignInActivity";
     private static  final  int RC_SIGN_IN = 9001;
+    public FirebaseUser user;
+    public static String userEmail;
     GoogleApiClient.OnConnectionFailedListener ad;
 
     @Override
@@ -137,7 +139,8 @@ googleSignIn();
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            FirebaseUser user =mAuth.getCurrentUser();
+                            user =mAuth.getCurrentUser();
+                            userEmail = user.getEmail();
                             startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
                         }
                         else{

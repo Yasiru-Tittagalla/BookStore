@@ -8,6 +8,7 @@ it gets the book data from the google api
 package com.example.bookstore;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -32,6 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.AuthCredential;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -46,11 +48,13 @@ import java.util.List;
 public class Tab2SearchActivity extends Fragment {
 
     private EditText searchText;
-    private Button searchButton;
+    private Button searchButton,wishButton;
+    final Tab2SearchActivity context = this;
     JSONObject jsonObject;
     JSONArray jsonArray;
     BookAdapter bookAdapter;
     ProgressBar progressBar;
+    public String isbn;
 
     // when the activity is created, run this method
     @Override
@@ -62,7 +66,9 @@ public class Tab2SearchActivity extends Fragment {
         final ListView listView = rootView.findViewById(R.id.listView);
         searchText = (EditText)rootView.findViewById(R.id.editText2);
         searchButton = (Button)rootView.findViewById(R.id.button);
+
 //         progressBar = rootView.findViewById(R.id.progressbar);
+
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,11 +120,13 @@ public class Tab2SearchActivity extends Fragment {
                             try {
                                 title = volumeInfo.getString("title");
                                 description = volumeInfo.getString("description");
+//                                isbn = volumeInfo.getString("ISBN");
                                 JSONObject imageObject = volumeInfo.optJSONObject("imageLinks");
                                     imageUrl = imageObject.getString("thumbnail");
 
                                     Books books = new Books(title,description,imageUrl);
                                     bookAdapter.add(books);
+//                                wishButton = (Button) rootView.findViewById(R.id.wishButton);
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -190,6 +198,7 @@ public class Tab2SearchActivity extends Fragment {
                 bookHolder.textView2 = (TextView) row.findViewById(R.id.textView2);
                 bookHolder.textView3 = (TextView) row.findViewById(R.id.textView3);
                 bookHolder.imageView = (ImageView) row.findViewById(R.id.imageView);
+                bookHolder.wishListButton = (Button) row.findViewById(R.id.wishButton);
                 row.setTag(bookHolder);
             }
             else {
@@ -199,6 +208,16 @@ public class Tab2SearchActivity extends Fragment {
             bookHolder.textView2.setText(books.getTitle());
             bookHolder.textView3.setText(books.getDescription());
             Picasso.get().load(books.getImageUrl()).into(bookHolder.imageView);
+            bookHolder.wishListButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent wishIntent = new Intent(v.getContext() ,WishListDialog.class);
+                    wishIntent.putExtra("userName", LoginActivity.userEmail);
+                    wishIntent.putExtra("ISBN",isbn);
+
+                    startActivity(wishIntent);
+                }
+            });
             return row;
         }
 
@@ -206,5 +225,6 @@ public class Tab2SearchActivity extends Fragment {
     static class BookHolder{
         TextView textView2,textView3;
         ImageView imageView;
+        Button wishListButton;
     }
 }
