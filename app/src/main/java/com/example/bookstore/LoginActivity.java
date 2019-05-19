@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,13 +24,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 /**
  * A login screen that offers login via email/password.
@@ -102,7 +109,6 @@ googleSignIn();
     }
 
     private void googleSignIn() {
-
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
         startActivityForResult(signInIntent,RC_SIGN_IN);
     }
@@ -110,7 +116,35 @@ googleSignIn();
     @Override
     public void onActivityResult(int requestCode, int resultCode,Intent data){
         super.onActivityResult(requestCode,resultCode,data);
+        if(requestCode == RC_SIGN_IN){
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+//            try{
+                GoogleSignInAccount account = task.getResult();
+                firebaseAuthWithGoogle(account);
+            }
+//            catch (ApiException e){
+//                Log.w(TAG,"Error when Signing in with Google",e);
+//            }
 
+//        }
+
+    }
+
+    private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(),null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+                            FirebaseUser user =mAuth.getCurrentUser();
+                            startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(),"User Authentication Failed",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     /*private void doLogin() {

@@ -74,6 +74,7 @@ public class SignUpActivity extends AppCompatActivity {
                             if( task.getException() instanceof FirebaseAuthUserCollisionException) {
                                 Toast.makeText(SignUpActivity.this, "This E-mail Is Already Registered With Our Service",
                                         Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
                             }
                             else
                                 Toast.makeText(SignUpActivity.this, task.getException().getMessage(),
