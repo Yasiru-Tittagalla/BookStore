@@ -18,8 +18,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 public class Tab2SearchActivity extends Fragment {
@@ -31,8 +33,10 @@ public class Tab2SearchActivity extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         final View rootView = inflater.inflate(R.layout.tab2_search, container, false);
 
+        ListView listView = rootView.findViewById(R.id.listView);
         searchText = (EditText)rootView.findViewById(R.id.editText2);
         searchButton = (Button)rootView.findViewById(R.id.button);
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -61,9 +65,34 @@ public class Tab2SearchActivity extends Fragment {
                 } else {
                     Toast.makeText(getActivity(), "Please enter a book name", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 
         return rootView;
+    }
+
+    // custom class for the adapter to display the list of values
+    class customeManager extends BaseAdapter{
+
+        @Override
+        public int getCount() {
+            return 0;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            return null;
+        }
     }
 }
