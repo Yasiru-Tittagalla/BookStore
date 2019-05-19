@@ -5,11 +5,13 @@ public class Book {
     private String author;
     private String thumbnail;
     private String webReaderLink;
+    private String description;
 
-    public Book(String title, String thumbnail, String webReaderLink){
+    public Book(String title, String thumbnail, String webReaderLink, String description){
         this.title = title;
         this.thumbnail = thumbnail;
         this.webReaderLink = webReaderLink;
+        this.description = description;
     }
 
     public String getTitle() {
@@ -24,7 +26,7 @@ public class Book {
         return thumbnail;
     }
 
-    public String getWebReaderLink() {
-        return webReaderLink;
-    }
+    public String getWebReaderLink() { return webReaderLink; }
+
+    public String getDescription() { return description; }
 }
