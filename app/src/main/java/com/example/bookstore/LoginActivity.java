@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity  implements OnClickListener
       signInButton = findViewById(R.id.googleSignIn);
       signInButton.setOnClickListener(this);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestIdToken("903678995544-1qdtn8rhl8otugog7bu40vms0v3egb0g.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
         googleApiClient = new GoogleApiClient.Builder(this)
