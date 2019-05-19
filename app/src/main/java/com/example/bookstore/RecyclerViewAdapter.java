@@ -1,23 +1,37 @@
 package com.example.bookstore;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
+import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
 
     private Context mContext;
+    private List<Book> mData;
 
-    public RecyclerViewAdapter(Context mContext) {
+    public RecyclerViewAdapter(Context mContext, List<Book> mData) {
         this.mContext = mContext;
+        this.mData = mData;
     }
 
     @Override
@@ -29,18 +43,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
+    public void onBindViewHolder(@NonNull final MyViewHolder myViewHolder, int position) {
 
-        // set the datae here
-        myViewHolder.book_title.setText("Game of Thrones");
-        Uri imageUri = Uri.parse("https://books.google.com/books/content?id=BWXhBQAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api");
-        myViewHolder.book_thumbnail.setImageURI(imageUri);
-
+        // set the data here
+        myViewHolder.book_title.setText(mData.get(position).getTitle());
+        Picasso.get().load(mData.get(position).getThumbnail())
+                .into(myViewHolder.book_thumbnail);
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mData.size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {

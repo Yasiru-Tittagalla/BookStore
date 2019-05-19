@@ -9,6 +9,8 @@ package com.example.bookstore;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,16 +27,23 @@ public class Tab1HomeActivity extends Fragment {
         View rootView = inflater.inflate(R.layout.tab1_home, container, false);
 
         // get books from the api
-        new FetchBooks().execute("spider man");
+        new FetchBooks().execute("subject:Thriller");
 
         // wait till the api call is over
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Log.d(LOG_TAG, NetworkUtils.bookJSONString);
-//            }
-//        }, 5000);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                for (Book book : FetchBooks.bookList) {
+                    Log.d(LOG_TAG, "book title " + book.getTitle());
+                    Log.d(LOG_TAG, book.getThumbnail());
+                }
+                RecyclerView myrv = (RecyclerView)getActivity().findViewById(R.id.recyclerview_id);
+                RecyclerViewAdapter myAdapter = new RecyclerViewAdapter(getContext(), FetchBooks.bookList);
+                myrv.setLayoutManager(new GridLayoutManager(getContext(), 3));
+                myrv.setAdapter(myAdapter);
+            }
+        }, 3000);
 
         return rootView;
     }

@@ -12,11 +12,12 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FetchBooks extends AsyncTask<String, Void, String> {
 
-    public static List<Book> bookList;
+    public static List<Book> bookList = new ArrayList<Book>();
     private static final String LOG_TAG = FetchBooks.class.getSimpleName();
 
     // call to the api in the background
@@ -58,8 +59,8 @@ public class FetchBooks extends AsyncTask<String, Void, String> {
                 }
 
                 if (title != null && thumb_url != null) {
-                    Log.d(LOG_TAG, title);
-//                    bookList.add(new Book(title, author, thumb_url));
+//                    Log.d(LOG_TAG, title + " " + thumb_url);
+                    bookList.add(new Book(title, thumb_url));
                 }
             }
         } catch(Exception e) {
