@@ -8,6 +8,8 @@ it gets the book data from the google api
 package com.example.bookstore;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -19,14 +21,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Tab2SearchActivity extends Fragment {
 
@@ -34,6 +47,8 @@ public class Tab2SearchActivity extends Fragment {
     private Button searchButton;
     JSONObject jsonObject;
     JSONArray jsonArray;
+    BookAdapter bookAdapter;
+
 
     // when the activity is created, run this method
     @Override
@@ -42,7 +57,7 @@ public class Tab2SearchActivity extends Fragment {
 
         final View rootView = inflater.inflate(R.layout.tab2_search, container, false);
 
-        ListView listView = rootView.findViewById(R.id.listView);
+        final ListView listView = rootView.findViewById(R.id.listView);
         searchText = (EditText)rootView.findViewById(R.id.editText2);
         searchButton = (Button)rootView.findViewById(R.id.button);
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -78,7 +93,8 @@ public class Tab2SearchActivity extends Fragment {
                             try {
                                 JSONObject jsonObject = new JSONObject(Books);
                                 JSONArray itemsArray = jsonObject.getJSONArray("items");
-
+                                 bookAdapter = new BookAdapter(getContext(),R.layout.row_layout);
+                                listView.setAdapter(bookAdapter);
 //                        Log.d(LOG_TAG, "item length is " + itemsArray.length());
 
                                 for (int i = 0; i < itemsArray.length(); i++) {
@@ -88,8 +104,16 @@ public class Tab2SearchActivity extends Fragment {
                                     String description = null;
                                     JSONObject volumeInfo = book.getJSONObject("volumeInfo");
 
+
                                     try {
                                         title = volumeInfo.getString("title");
+                                        description = volumeInfo.getString("description");
+                                        JSONObject imageObject = volumeInfo.optJSONObject("imageLinks");
+                                            imageUrl = imageObject.getString("smallThumbnail");
+
+                                            Books books = new Books(title,description,imageUrl);
+                                            bookAdapter.add(books);
+
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
@@ -99,6 +123,7 @@ public class Tab2SearchActivity extends Fragment {
                                     }
                                 }
                             } catch(Exception e) {
+                                e.printStackTrace();
                                 Toast.makeText(getActivity(), "Nothing Found", Toast.LENGTH_SHORT).show();
                             }
 
@@ -121,16 +146,26 @@ public class Tab2SearchActivity extends Fragment {
     }
 
     // custom class for the adapter to display the list of values
-    class customeManager extends BaseAdapter{
+//    class customeManager extends BaseAdapter{
+    class BookAdapter extends ArrayAdapter {
+        List list = new ArrayList();
+        public BookAdapter(Context context, int reousrce){
+            super((Context) context,reousrce);
+        }
 
+        public  void add(Books object){
+            super.add(object);
+            list.add(object);
+        }
         @Override
         public int getCount() {
-            return 0;
+
+          return list.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return null;
+            return list.get(position);
         }
 
         @Override
@@ -140,7 +175,46 @@ public class Tab2SearchActivity extends Fragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            return null;
+
+            View row;
+            row = convertView;
+            BookHolder bookHolder;
+            if(row == null){
+                LayoutInflater layoutInflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                row = layoutInflater.inflate(R.layout.row_layout,parent,false);
+                bookHolder = new BookHolder();
+                bookHolder.textView2 = (TextView) row.findViewById(R.id.textView2);
+                bookHolder.textView3 = (TextView) row.findViewById(R.id.textView3);
+                bookHolder.imageView = (ImageView) row.findViewById(R.id.imageView);
+                row.setTag(bookHolder);
+            }
+            else {
+                    bookHolder = (BookHolder) row.getTag();
+            }
+            Books books = (Books) getItem(position);
+            bookHolder.textView2.setText(books.getTitle());
+            bookHolder.textView3.setText(books.getDescription());
+//            bookHolder.imageView.setText(books.getImageUrl());
+            URL imageUrl = null;
+            try {
+                imageUrl = new URL(books.getImageUrl());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            Bitmap bitmap = null;
+            try {
+                bitmap = BitmapFactory.decodeStream(imageUrl.openConnection().getInputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            bookHolder.imageView.setImageBitmap(bitmap);
+//            Picasso.get().load(books.getImageUrl()).into(bookHolder.imageView);
+            return row;
         }
+
+    }
+    static class BookHolder{
+        TextView textView2,textView3;
+        ImageView imageView;
     }
 }
