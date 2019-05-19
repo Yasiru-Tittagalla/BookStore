@@ -54,7 +54,7 @@ public class Tab2SearchActivity extends Fragment {
     JSONArray jsonArray;
     BookAdapter bookAdapter;
     ProgressBar progressBar;
-    public String isbn;
+    public String id;
 
     // when the activity is created, run this method
     @Override
@@ -120,7 +120,7 @@ public class Tab2SearchActivity extends Fragment {
                             try {
                                 title = volumeInfo.getString("title");
                                 description = volumeInfo.getString("description");
-//                                isbn = volumeInfo.getString("ISBN");
+                                id = book.getString("id");
                                 JSONObject imageObject = volumeInfo.optJSONObject("imageLinks");
                                     imageUrl = imageObject.getString("thumbnail");
 
@@ -213,7 +213,7 @@ public class Tab2SearchActivity extends Fragment {
                 public void onClick(View v) {
                     Intent wishIntent = new Intent(v.getContext() ,WishListDialog.class);
                     wishIntent.putExtra("userName", LoginActivity.userEmail);
-                    wishIntent.putExtra("ISBN",isbn);
+                    wishIntent.putExtra("ID",id);
 
                     startActivity(wishIntent);
                 }
