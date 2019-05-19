@@ -18,6 +18,7 @@ public class BookActivity extends AppCompatActivity {
     private TextView tvtitle, tvdescription;
     private ImageView tvimage;
     private Button readbutton;
+    private Button wishlistbutton;
 
     private static final String LOG_TAG = BookActivity.class.getSimpleName();
 
@@ -30,6 +31,7 @@ public class BookActivity extends AppCompatActivity {
         tvdescription = (TextView) findViewById(R.id.descdescription);
         tvimage = (ImageView) findViewById(R.id.descbookthumbnail);
         readbutton = (Button) findViewById(R.id.descreadbutton);
+        wishlistbutton = (Button) findViewById(R.id.descwishlist);
 
         // receive data
         Intent intent = getIntent();
@@ -46,6 +48,16 @@ public class BookActivity extends AppCompatActivity {
 //                webView.loadUrl(webReaderLink);
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(webReaderLink));
                 startActivity(browserIntent);
+            }
+        });
+
+        wishlistbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent wishIntent = new Intent(v.getContext() ,WishListDialog.class);
+                wishIntent.putExtra("userName", LoginActivity.userEmail);
+//                wishIntent.putExtra("ID",id);
+                startActivity(wishIntent);
             }
         });
 
