@@ -82,7 +82,7 @@ public class WishListDialog extends Activity {
 
     private void saveToDatabase(String userName, String isbn, String wishMessage) {
 
-        DocumentReference newUserRef = db.collection("users").document();
+        DocumentReference newUserRef = db.collection("users").document("wish list");
         userWishList u1 = new userWishList(userName,isbn,wishMessage);
 //        u1.setUserName(userName);
 //        u1.setBookId(isbn);

@@ -15,7 +15,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+
 public class Tab3FavoritesActivity extends Fragment {
+
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private DocumentReference wishRef = db.collection("Users").document("wish list");
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
