@@ -20,7 +20,6 @@ public class Tab1HomeActivity extends Fragment {
 
     private static final String LOG_TAG = Tab1HomeActivity.class.getSimpleName();
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -43,9 +42,7 @@ public class Tab1HomeActivity extends Fragment {
                 myrv.setLayoutManager(new GridLayoutManager(getContext(), 3));
                 myrv.setAdapter(myAdapter);
             }
-        }, 3000);
-
+        }, 1000);
         return rootView;
     }
-
 }
