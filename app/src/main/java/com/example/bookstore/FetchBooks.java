@@ -39,16 +39,16 @@ public class FetchBooks extends AsyncTask<String, Void, String> {
 
             for (int i = 0; i < itemsArray.length(); i++) {
                 JSONObject book = itemsArray.getJSONObject(i);
+                JSONObject volumeInfo = book.getJSONObject("volumeInfo");
+                JSONObject accessInfo = book.getJSONObject("accessInfo");
                 String title = null;
                 String thumb_url = null;
-//                JSONArray authors = null;
-//                String author = null;
-                JSONObject volumeInfo = book.getJSONObject("volumeInfo");
+                String webReaderLink = null;
 
                 try {
                     title = volumeInfo.getString("title");
                     thumb_url = volumeInfo.getJSONObject("imageLinks").getString("thumbnail");
-
+                    webReaderLink = accessInfo.getString("webReaderLink");
 //                    authors = volumeInfo.getJSONArray("authors");
 //                    for (int j = 0; j < authors.length(); ++j) {
 //                        JSONObject rec = authors.getJSONObject(i);
@@ -60,7 +60,7 @@ public class FetchBooks extends AsyncTask<String, Void, String> {
 
                 if (title != null && thumb_url != null) {
 //                    Log.d(LOG_TAG, title + " " + thumb_url);
-                    bookList.add(new Book(title, thumb_url));
+                    bookList.add(new Book(title, thumb_url, webReaderLink));
                 }
             }
         } catch(Exception e) {

@@ -34,8 +34,7 @@ public class Tab1HomeActivity extends Fragment {
             @Override
             public void run() {
                 for (Book book : FetchBooks.bookList) {
-                    Log.d(LOG_TAG, "book title " + book.getTitle());
-                    Log.d(LOG_TAG, book.getThumbnail());
+                    Log.d(LOG_TAG, "web reader link" + book.getWebReaderLink());
                 }
                 RecyclerView myrv = (RecyclerView)getActivity().findViewById(R.id.recyclerview_id);
                 RecyclerViewAdapter myAdapter = new RecyclerViewAdapter(getContext(), FetchBooks.bookList);

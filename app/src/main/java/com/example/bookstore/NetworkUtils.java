@@ -60,7 +60,6 @@ public class NetworkUtils {
                 buffer.append(line + "\n");
             }
             if (buffer.length() == 0) {
-                // stream is empty
                 return null;
             }
             bookJSONString = buffer.toString();

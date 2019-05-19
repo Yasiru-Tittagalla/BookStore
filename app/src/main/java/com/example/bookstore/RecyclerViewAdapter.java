@@ -49,6 +49,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         myViewHolder.book_title.setText(mData.get(position).getTitle());
         Picasso.get().load(mData.get(position).getThumbnail())
                 .into(myViewHolder.book_thumbnail);
+//        myViewHolder.v
     }
 
     @Override
