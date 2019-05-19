@@ -95,17 +95,20 @@ public class LoginActivity extends AppCompatActivity  implements OnClickListener
         image.startAnimation(rotate);
     }
 
+    @Override
+    public void onBackPressed() { }
+
     // starting sign up activity onclick
     @Override
     public void onClick(View v) {
-switch (v.getId()){
-    case R.id.textViewSignup:
-        startActivity(new Intent(this, SignUpActivity.class));
-        break;
-    case R.id.googleSignIn:
-googleSignIn();
-    break;
-}
+        switch (v.getId()){
+            case R.id.textViewSignup:
+                startActivity(new Intent(this, SignUpActivity.class));
+                break;
+            case R.id.googleSignIn:
+            googleSignIn();
+            break;
+        }
     }
 
     private void googleSignIn() {

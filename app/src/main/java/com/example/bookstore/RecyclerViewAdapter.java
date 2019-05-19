@@ -1,3 +1,9 @@
+/*
+This class is used by the home page
+to create the grid layout
+having one card per book
+it will load data from the FetchBooks.java
+ */
 package com.example.bookstore;
 
 import android.content.Context;

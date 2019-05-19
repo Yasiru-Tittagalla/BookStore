@@ -1,3 +1,7 @@
+/*
+This class represents a single book item
+which is used all over the system
+ */
 package com.example.bookstore;
 
 public class Book {
