@@ -30,6 +30,7 @@
             android:name=".LoginActivity"
             android:label="@string/app_name"></activity>
         <activity android:name=".SignUpActivity" />
+        <activity android:name=".WishListDialog"/>
     </application>
 
 </manifest>
