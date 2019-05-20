@@ -10,12 +10,14 @@ public class Book {
     private String thumbnail;
     private String webReaderLink;
     private String description;
+    private String bookId;
 
-    public Book(String title, String thumbnail, String webReaderLink, String description){
+    public Book(String title, String thumbnail, String webReaderLink, String description, String bookId){
         this.title = title;
         this.thumbnail = thumbnail;
         this.webReaderLink = webReaderLink;
         this.description = description;
+        this.bookId = bookId;
     }
 
     public String getTitle() {
@@ -33,4 +35,6 @@ public class Book {
     public String getWebReaderLink() { return webReaderLink; }
 
     public String getDescription() { return description; }
+
+    public String getBookId() { return bookId; }
 }

@@ -67,6 +67,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 intent.putExtra("Description", mData.get(position).getDescription());
                 intent.putExtra("Thumbnail", mData.get(position).getThumbnail());
                 intent.putExtra("WebLink", mData.get(position).getWebReaderLink());
+                intent.putExtra("BookId", mData.get(position).getBookId());
                 mContext.startActivity(intent);
             }
         });

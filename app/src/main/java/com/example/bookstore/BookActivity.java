@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 public class BookActivity extends AppCompatActivity {
@@ -24,6 +31,7 @@ public class BookActivity extends AppCompatActivity {
     private ImageView tvimage;
     private Button readbutton;
     private Button wishlistbutton;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private static final String LOG_TAG = BookActivity.class.getSimpleName();
 
@@ -44,6 +52,7 @@ public class BookActivity extends AppCompatActivity {
         String description = intent.getExtras().getString("Description");
         String thumbnail = intent.getExtras().getString("Thumbnail");
         final String webReaderLink = intent.getExtras().getString("WebLink");
+        final String bookId = intent.getExtras().getString("BookId");
 
         readbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,17 +80,15 @@ public class BookActivity extends AppCompatActivity {
                         .setCancelable(true)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-//                                    finish();
-                                Toast.makeText(getApplicationContext(),input.getText(),
-                                        Toast.LENGTH_SHORT).show();
+                              FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                              String userEmail = user.getEmail();
+                              saveToDatabase(userEmail, bookId,input.getText().toString());
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 //  Action for 'NO' Button
                                 dialog.cancel();
-                                Toast.makeText(getApplicationContext(),"you choose no action for alertbox",
-                                        Toast.LENGTH_SHORT).show();
                             }
                         });
                 //Creating dialog box
@@ -96,5 +103,23 @@ public class BookActivity extends AppCompatActivity {
         tvtitle.setText(title);
         tvdescription.setText(description);
         Picasso.get().load(thumbnail).into(tvimage);
+    }
+
+    private void saveToDatabase(String userName, String isbn, String wishMessage) {
+
+        DocumentReference newUserRef = db.collection("wishlist")
+                .document(userName + "_" + isbn);
+        userWishList u1 = new userWishList(userName,isbn,wishMessage);
+//        u1.setUserName(userName);
+//        u1.setBookId(isbn);
+//        u1.setWish(wishMessage);
+        newUserRef.set(u1).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(getApplicationContext(),"Added To Wish List",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }

@@ -45,11 +45,13 @@ public class FetchBooks extends AsyncTask<String, Void, String> {
                 String thumb_url = null;
                 String description = null;
                 String webReaderLink = null;
+                String bookId = null;
 
                 try {
                     title = volumeInfo.getString("title");
                     thumb_url = volumeInfo.getJSONObject("imageLinks").getString("thumbnail");
                     description = volumeInfo.getString("description");
+                    bookId = book.getString("id");
                     webReaderLink = accessInfo.getString("webReaderLink");
 //                    authors = volumeInfo.getJSONArray("authors");
 //                    for (int j = 0; j < authors.length(); ++j) {
@@ -61,9 +63,9 @@ public class FetchBooks extends AsyncTask<String, Void, String> {
                 }
 
                 if (title != null && thumb_url != null && webReaderLink != null
-                    && description != null) {
+                    && description != null && bookId != null) {
 //                    Log.d(LOG_TAG, title + " " + thumb_url);
-                    bookList.add(new Book(title, thumb_url, webReaderLink, description));
+                    bookList.add(new Book(title, thumb_url, webReaderLink, description, bookId));
                 }
             }
         } catch(Exception e) {
