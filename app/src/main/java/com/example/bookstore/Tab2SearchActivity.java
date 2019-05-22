@@ -94,7 +94,7 @@ public class Tab2SearchActivity extends Fragment {
                 // to search the book
                 String text = searchText.getText().toString();
                 if(!text.isEmpty()){
-                    new FetchBooks().execute(text);
+                    new FetchBooks().execute(text, "search");
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
