@@ -7,6 +7,8 @@ this activity tab will memorize it and remind on time
 
 package com.example.bookstore;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -17,14 +19,24 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -33,15 +45,19 @@ import java.util.Map;
 
 public class Tab3WishlistActivity extends Fragment {
 
+    WishAdapter wishAdapter;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static final String LOG_TAG = Tab3WishlistActivity.class.getSimpleName();
     public static List<Book> bookList = new ArrayList<Book>();
-
+    final Tab3WishlistActivity context = this;
+    public String id;
+    public EditText newWish;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tab3_wishlist, container, false);
 
+        final ListView listView = rootView.findViewById(R.id.listView);
 
         db.collection("wishlist")
         .get()
@@ -86,7 +102,7 @@ public class Tab3WishlistActivity extends Fragment {
 //            myrv.setAdapter(myAdapter);
 //        }
 
-        runCallback(new Runnable()
+        /*runCallback(new Runnable()
         {
             @Override
             public void run()
@@ -102,26 +118,150 @@ public class Tab3WishlistActivity extends Fragment {
                     }
                 }, 2000);
             }
-        });
+        });*/
 
 
 
-//        // wait till the api call is over
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//            }
-//        }, 2000);
+
+        //send in the each book id of the wish list to fetch its data
+        new FetchBooks().execute("QnghAQAAIAAJ", "search");
+        // wait till the api call is over
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                String Books = NetworkUtils.bookJSONString;
+
+                try {
+                    JSONObject jsonObject = new JSONObject(Books);
+                    JSONArray itemsArray = jsonObject.getJSONArray("wishlist");
+                    wishAdapter = new WishAdapter(getContext(),R.layout.wish_row_layout);
+                    listView.setAdapter(wishAdapter);
+//                        Log.d(LOG_TAG, "item length is " + itemsArray.length());
+
+                    for (int i = 0; i < itemsArray.length(); i++) {
+                        JSONObject book = itemsArray.getJSONObject(i);
+                        String title = null;
+                        String imageUrl =null;
+                        String wish = null;
+                        JSONObject volumeInfo = book.getJSONObject("volumeInfo");
+
+
+                        try {
+                            title = volumeInfo.getString("title");
+                            wish = volumeInfo.getString("wish");
+                            id = book.getString("id");
+                            JSONObject imageObject = volumeInfo.optJSONObject("imageLinks");
+                            imageUrl = imageObject.getString("thumbnail");
+
+                            Books books = new Books(title,wish,imageUrl);
+                            wishAdapter.add(books);
+//                                wishButton = (Button) rootView.findViewById(R.id.wishButton);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+//                                    progressBar.setVisibility(View.GONE);
+
+                    }
+                } catch(Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getActivity(), "Nothing Found", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        }, 5000);
 
         return rootView;
     }
 
-    private void runCallback(Runnable callback)
-    {
-        new FetchBooks().execute("id", "wishlist");
-        callback.run();
+class WishAdapter extends ArrayAdapter{
+
+    List list = new ArrayList();
+    public WishAdapter(Context context, int reousrce){
+        super((Context) context,reousrce);
+    }
+
+    public  void add(Books object){
+        super.add(object);
+        list.add(object);
+    }
+    @Override
+    public int getCount() {
+
+        return list.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return list.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return 0;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+
+        View row;
+        row = convertView;
+        WishHolder wishHolder;
+        if(row == null){
+            LayoutInflater layoutInflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            row = layoutInflater.inflate(R.layout.row_layout,parent,false);
+            wishHolder = new Tab3WishlistActivity.WishHolder();
+            newWish = row.findViewById(R.id.editText);
+            wishHolder.textView2 = (TextView) row.findViewById(R.id.textView2);
+            wishHolder.editText = (EditText) row.findViewById(R.id.editText);
+            wishHolder.imageView = (ImageView) row.findViewById(R.id.imageView);
+            wishHolder.deleteWish = (Button) row.findViewById(R.id.deleteWish);
+            wishHolder.updateWish = (Button) row.findViewById(R.id.updateWish);
+            row.setTag(wishHolder);
+        }
+        else {
+            wishHolder = (Tab3WishlistActivity.WishHolder) row.getTag();
+        }
+        Books books = (Books) getItem(position);
+        wishHolder.textView2.setText(books.getTitle());
+        wishHolder.editText.setText(books.getDescription());
+        Picasso.get().load(books.getImageUrl()).into(wishHolder.imageView);
+        wishHolder.updateWish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Update the wish
+                DocumentReference wishRef = db.collection("wishlist")
+                        .document(/*BookId*/);
+                wishRef.update("wish",newWish.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            Toast.makeText(getContext(),"Updated Sucessfully",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+        wishHolder.deleteWish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Delete the wish
+                DocumentReference wishRef = db.collection("wishlist")
+                        .document(/*id of the wish*/);
+                wishRef.delete();
+            }
+        });
+        return row;
+    }
+}
+
+    static class WishHolder{
+        TextView textView2;
+        ImageView imageView;
+        Button deleteWish,updateWish;
+        EditText editText;
     }
 
 }

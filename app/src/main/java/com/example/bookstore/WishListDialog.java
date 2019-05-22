@@ -28,6 +28,7 @@ public class WishListDialog extends Activity {
     String wishMessage = null;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth;
+    AlertDialog dialog =null;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -57,7 +58,7 @@ public class WishListDialog extends Activity {
 
             }
         });
-        final AlertDialog dialog = alertDialogBuilder.create();
+      dialog = alertDialogBuilder.create();
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +83,8 @@ public class WishListDialog extends Activity {
 
     private void saveToDatabase(String userName, String isbn, String wishMessage) {
 
-        DocumentReference newUserRef = db.collection("users").document("wish list");
+        DocumentReference newUserRef = db.collection("wishlist")
+                .document(userName + "_" + isbn);
         userWishList u1 = new userWishList(userName,isbn,wishMessage);
 //        u1.setUserName(userName);
 //        u1.setBookId(isbn);
@@ -92,6 +94,7 @@ public class WishListDialog extends Activity {
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){
                     Toast.makeText(getApplicationContext(),"Added To Wish List",Toast.LENGTH_SHORT).show();
+
                 }
             }
         });
