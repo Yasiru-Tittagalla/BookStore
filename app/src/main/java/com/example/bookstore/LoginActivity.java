@@ -170,6 +170,7 @@ public class LoginActivity extends AppCompatActivity  implements OnClickListener
 
 
         String email = editTextUserName.getText().toString();
+        userEmail = editTextUserName.getText().toString();
         String password = editTextPassword.getText().toString();
 
         if (email.isEmpty()) {

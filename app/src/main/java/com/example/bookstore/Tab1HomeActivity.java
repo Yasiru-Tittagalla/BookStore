@@ -25,23 +25,53 @@ public class Tab1HomeActivity extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tab1_home, container, false);
 
-        // get books from the api
-        new FetchBooks().execute("subject:Thriller");
+//        // get books from the api
+//        new FetchBooks().execute("subject:Thriller");
+//
+//        // wait till the api call is over
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+////                for (Book book : FetchBooks.bookList) {
+////                    Log.d(LOG_TAG, "web reader link" + book.getWebReaderLink());
+////                }
+//                RecyclerView myrv = (RecyclerView)getActivity().findViewById(R.id.recyclerview_id);
+//                RecyclerViewAdapter myAdapter = new RecyclerViewAdapter(getContext(), FetchBooks.bookList);
+//                myrv.setLayoutManager(new GridLayoutManager(getContext(), 3));
+//                myrv.setAdapter(myAdapter);
+//            }
+//        }, 2000);
 
-        // wait till the api call is over
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+
+        runCallback(new Runnable()
+        {
             @Override
-            public void run() {
-//                for (Book book : FetchBooks.bookList) {
-//                    Log.d(LOG_TAG, "web reader link" + book.getWebReaderLink());
-//                }
-                RecyclerView myrv = (RecyclerView)getActivity().findViewById(R.id.recyclerview_id);
-                RecyclerViewAdapter myAdapter = new RecyclerViewAdapter(getContext(), FetchBooks.bookList);
-                myrv.setLayoutManager(new GridLayoutManager(getContext(), 3));
-                myrv.setAdapter(myAdapter);
+            public void run()
+            {
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        RecyclerView myrv = (RecyclerView)getActivity().findViewById(R.id.recyclerview_id);
+                        RecyclerViewAdapter myAdapter = new RecyclerViewAdapter(getContext(), FetchBooks.bookList);
+                        myrv.setLayoutManager(new GridLayoutManager(getContext(), 3));
+                        myrv.setAdapter(myAdapter);
+                    }
+                }, 2000);
             }
-        }, 2000);
+        });
+
+
+
         return rootView;
     }
+
+    private void runCallback(Runnable callback)
+    {
+        new FetchBooks().execute("subject:Thriller", "home");
+        callback.run();
+    }
+
+
 }

@@ -23,9 +23,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Tab3WishlistActivity extends Fragment {
 
@@ -38,16 +42,33 @@ public class Tab3WishlistActivity extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tab3_wishlist, container, false);
 
+
         db.collection("wishlist")
         .get()
         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.d(LOG_TAG, "item is " + document.getId() + " => " + document.getData());
-//                        Log.d(LOG_TAG, document.getId());
+                        // if the username is current username,
+                        // get the book and the wish of the given id
+                        // and show the book with wish note
+                        Map<String, Object> objectMap;
+                        objectMap = document.getData();
+                        for(Map.Entry entry : objectMap.entrySet()){
+                            if(entry.getKey().equals("userName")) {
+                                if(entry.getValue().equals(LoginActivity.userEmail)){
+                                    for(Map.Entry entry1 : objectMap.entrySet()){
+                                        if(entry1.getKey().equals("bookId")) {
+                                                Log.d(LOG_TAG, "book id is " + entry1.getValue());
+                                        }
+                                        if(entry1.getKey().equals("wish")) {
+                                            Log.d(LOG_TAG, "wish is " + entry1.getValue());
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 } else {
                     Log.d(LOG_TAG, "Error getting documents: ", task.getException());
@@ -55,25 +76,52 @@ public class Tab3WishlistActivity extends Fragment {
             }
         });
 
-        // get books from the api
-        new FetchBooks().execute("id");
+//        try {
+//            // get books from the api
+//            new FetchBooks().execute("id:J7ywAAAAIAAJ");
+//        } finally {
+//            RecyclerView myrv = (RecyclerView)getActivity().findViewById(R.id.wishlistrecycler);
+//            RecyclerViewAdapter myAdapter = new RecyclerViewAdapter(getContext(), FetchBooks.bookList);
+//            myrv.setLayoutManager(new GridLayoutManager(getContext(), 3));
+//            myrv.setAdapter(myAdapter);
+//        }
 
-        // wait till the api call is over
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        runCallback(new Runnable()
+        {
             @Override
-            public void run() {
-//                for (Book book : FetchBooks.bookList) {
-//                    Log.d(LOG_TAG, "web reader link" + book.getWebReaderLink());
-//                }
-                RecyclerView myrv = (RecyclerView)getActivity().findViewById(R.id.wishlistrecycler);
-                RecyclerViewAdapter myAdapter = new RecyclerViewAdapter(getContext(), FetchBooks.bookList);
-                myrv.setLayoutManager(new GridLayoutManager(getContext(), 3));
-                myrv.setAdapter(myAdapter);
+            public void run()
+            {
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        RecyclerView myrv = (RecyclerView)getActivity().findViewById(R.id.wishlistrecycler);
+                        RecyclerViewAdapter myAdapter = new RecyclerViewAdapter(getContext(), FetchBooks.wishList);
+                        myrv.setLayoutManager(new GridLayoutManager(getContext(), 3));
+                        myrv.setAdapter(myAdapter);
+                    }
+                }, 2000);
             }
-        }, 2000);
+        });
+
+
+
+//        // wait till the api call is over
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//            }
+//        }, 2000);
 
         return rootView;
+    }
+
+    private void runCallback(Runnable callback)
+    {
+        new FetchBooks().execute("id", "wishlist");
+        callback.run();
     }
 
 }

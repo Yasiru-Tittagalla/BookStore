@@ -18,11 +18,14 @@ import java.util.List;
 public class FetchBooks extends AsyncTask<String, Void, String> {
 
     public static List<Book> bookList = new ArrayList<Book>();
+    public static List<Book> wishList = new ArrayList<Book>();
+    private String source;
     private static final String LOG_TAG = FetchBooks.class.getSimpleName();
 
     // call to the api in the background
     @Override
     protected String doInBackground(String... strings) {
+        source = strings[1];
         return NetworkUtils.getBookInfo(strings[0]);
     }
 
@@ -65,7 +68,11 @@ public class FetchBooks extends AsyncTask<String, Void, String> {
                 if (title != null && thumb_url != null && webReaderLink != null
                     && description != null && bookId != null) {
 //                    Log.d(LOG_TAG, title + " " + thumb_url);
-                    bookList.add(new Book(title, thumb_url, webReaderLink, description, bookId));
+                    if(source.equals("wishlist")){
+                        wishList.add(new Book(title, thumb_url, webReaderLink, description, bookId));
+                    } else {
+                        bookList.add(new Book(title, thumb_url, webReaderLink, description, bookId));
+                    }
                 }
             }
         } catch(Exception e) {
