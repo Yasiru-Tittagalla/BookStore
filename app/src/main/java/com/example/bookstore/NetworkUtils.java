@@ -62,7 +62,9 @@ public class NetworkUtils {
             if (buffer.length() == 0) {
                 return null;
             }
+
             bookJSONString = buffer.toString();
+            Log.d(LOG_TAG, "book details are" + bookJSONString);
 
         } catch (Exception e) {
             e.printStackTrace();
