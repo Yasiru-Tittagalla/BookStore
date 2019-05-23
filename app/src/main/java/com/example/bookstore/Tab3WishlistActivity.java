@@ -92,39 +92,8 @@ public class Tab3WishlistActivity extends Fragment {
             }
         });
 
-//        try {
-//            // get books from the api
-//            new FetchBooks().execute("id:J7ywAAAAIAAJ");
-//        } finally {
-//            RecyclerView myrv = (RecyclerView)getActivity().findViewById(R.id.wishlistrecycler);
-//            RecyclerViewAdapter myAdapter = new RecyclerViewAdapter(getContext(), FetchBooks.bookList);
-//            myrv.setLayoutManager(new GridLayoutManager(getContext(), 3));
-//            myrv.setAdapter(myAdapter);
-//        }
-
-        /*runCallback(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        RecyclerView myrv = (RecyclerView)getActivity().findViewById(R.id.wishlistrecycler);
-                        RecyclerViewAdapter myAdapter = new RecyclerViewAdapter(getContext(), FetchBooks.wishList);
-                        myrv.setLayoutManager(new GridLayoutManager(getContext(), 3));
-                        myrv.setAdapter(myAdapter);
-                    }
-                }, 2000);
-            }
-        });*/
-
-
-
-
         //send in the each book id of the wish list to fetch its data
-        new FetchBooks().execute("QnghAQAAIAAJ", "search");
+        new FetchBooks().execute("thor", "search");
         // wait till the api call is over
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -134,8 +103,9 @@ public class Tab3WishlistActivity extends Fragment {
                 String Books = NetworkUtils.bookJSONString;
 
                 try {
+//                    Log.d(LOG_TAG, "books are " + Books);
                     JSONObject jsonObject = new JSONObject(Books);
-                    JSONArray itemsArray = jsonObject.getJSONArray("wishlist");
+                    JSONArray itemsArray = jsonObject.getJSONArray("items");
                     wishAdapter = new WishAdapter(getContext(),R.layout.wish_row_layout);
                     listView.setAdapter(wishAdapter);
 //                        Log.d(LOG_TAG, "item length is " + itemsArray.length());
@@ -150,7 +120,7 @@ public class Tab3WishlistActivity extends Fragment {
 
                         try {
                             title = volumeInfo.getString("title");
-                            wish = volumeInfo.getString("wish");
+                            wish = volumeInfo.getString("description");
                             id = book.getString("id");
                             JSONObject imageObject = volumeInfo.optJSONObject("imageLinks");
                             imageUrl = imageObject.getString("thumbnail");
@@ -162,8 +132,6 @@ public class Tab3WishlistActivity extends Fragment {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-//                                    progressBar.setVisibility(View.GONE);
-
                     }
                 } catch(Exception e) {
                     e.printStackTrace();
@@ -211,8 +179,8 @@ class WishAdapter extends ArrayAdapter{
         WishHolder wishHolder;
         if(row == null){
             LayoutInflater layoutInflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            row = layoutInflater.inflate(R.layout.row_layout,parent,false);
-            wishHolder = new Tab3WishlistActivity.WishHolder();
+            row = layoutInflater.inflate(R.layout.wish_row_layout,parent,false);
+            wishHolder = new WishHolder();
             newWish = row.findViewById(R.id.editText);
             wishHolder.textView2 = (TextView) row.findViewById(R.id.textView2);
             wishHolder.editText = (EditText) row.findViewById(R.id.editText);
