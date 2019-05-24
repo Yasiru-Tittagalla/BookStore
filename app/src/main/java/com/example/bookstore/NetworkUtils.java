@@ -64,7 +64,6 @@ public class NetworkUtils {
             }
 
             bookJSONString = buffer.toString();
-            Log.d(LOG_TAG, "book details are" + bookJSONString);
 
         } catch (Exception e) {
             e.printStackTrace();

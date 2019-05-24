@@ -96,81 +96,110 @@ public class Tab3WishlistActivity extends Fragment {
                     Log.d(LOG_TAG, "Error getting documents: ", task.getException());
                 }
 
+                FetchBooks.bookList = new ArrayList<Book>();
+                FetchBooks.wishList = new ArrayList<Book>();
+
                 //send in the each book id of the wish list to fetch its data
                 wishAdapter = new WishAdapter(getContext(),R.layout.wish_row_layout);
                 listView.setAdapter(wishAdapter);
                 for (String bookId: bookIds ) {
-                    NetworkUtils.bookJSONString = "";
-                    Log.d(LOG_TAG, "book id is " + bookId);
-                    new FetchBooks().execute("id:" + bookId, "search");
-                    // wait till the api call is over
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            String Books = NetworkUtils.bookJSONString;
-                            Log.d(LOG_TAG, "string is " + NetworkUtils.bookJSONString + "asdf");
-
-                            try {
-                                JSONObject jsonObject = new JSONObject(Books);
-                                JSONArray itemsArray = jsonObject.getJSONArray("items");
-
-                                for (int i = 0; i < itemsArray.length(); i++) {
-                                    JSONObject book = itemsArray.getJSONObject(i);
-                                    String title = null;
-                                    String imageUrl =null;
-                                    String wish = null;
-                                    JSONObject volumeInfo = book.getJSONObject("volumeInfo");
-
-
-                                    try {
-                                        title = volumeInfo.getString("title");
-                                        wish = volumeInfo.getString("description");
-                                        id = book.getString("id");
-                                        JSONObject imageObject = volumeInfo.optJSONObject("imageLinks");
-                                        imageUrl = imageObject.getString("thumbnail");
-
-                                        Books books = new Books(title,wish,imageUrl);
-                                        wishAdapter.add(books);
-                                        Log.d(LOG_TAG, "wishadapter is " + wishAdapter.getCount());
-
-//                                wishButton = (Button) rootView.findViewById(R.id.wishButton);
-
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            } catch(Exception e) {
-                                e.printStackTrace();
-                                Toast.makeText(getActivity(), "Nothing Found", Toast.LENGTH_SHORT).show();
-                            }
-
-                        }
-                    }, 5000);
-
-
-
-                    Handler handler1 = new Handler();
-                    handler1.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-
-                        }
-                    }, 7000);
-
-
-
-
-
+                    new FetchBooks().execute("id:" + bookId, "wishList");
                 }
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d(LOG_TAG, "size is " + FetchBooks.wishList.size());
+                        for (Book wishBook : FetchBooks.wishList) {
+                            Log.d(LOG_TAG, "book is " + wishBook.getTitle());
+                            wishAdapter.add(wishBook);
+                        }
+                    }
+                }, 4000);
 
-                Log.d(LOG_TAG, "wishadapter is " + wishAdapter.getCount());
+                Handler handler1 = new Handler();
+                handler1.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                }, 7000);
+
             }
         });
 
         return rootView;
     }
+
+//    private void runCallback(String bookId, Runnable callback)
+//    {
+//        new FetchBooks().execute("id:" + bookId, "wishList");
+//        callback.run();
+//    }
+
+
+
+//                    NetworkUtils.bookJSONString = "";
+//                    Log.d(LOG_TAG, "book id is " + bookId);
+//                    new FetchBooks().execute("id:" + bookId, "search");
+//                     wait till the api call is over
+//                    Handler handler = new Handler();
+//                    handler.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//
+//                            String Books = NetworkUtils.bookJSONString;
+//                            Log.d(LOG_TAG, "string is " + NetworkUtils.bookJSONString + "asdf");
+
+//                            try {
+//                                JSONObject jsonObject = new JSONObject(Books);
+//                                JSONArray itemsArray = jsonObject.getJSONArray("items");
+//
+//                                for (int i = 0; i < itemsArray.length(); i++) {
+//                                    JSONObject book = itemsArray.getJSONObject(i);
+//                                    String title = null;
+//                                    String imageUrl =null;
+//                                    String wish = null;
+//                                    JSONObject volumeInfo = book.getJSONObject("volumeInfo");
+//
+//
+//                                    try {
+//                                        title = volumeInfo.getString("title");
+//                                        wish = volumeInfo.getString("description");
+//                                        id = book.getString("id");
+//                                        JSONObject imageObject = volumeInfo.optJSONObject("imageLinks");
+//                                        imageUrl = imageObject.getString("thumbnail");
+//
+//                                        Books books = new Books(title,wish,imageUrl);
+//                                        wishAdapter.add(books);
+//                                        Log.d(LOG_TAG, "wishadapter is " + wishAdapter.getCount());
+//
+////                                wishButton = (Button) rootView.findViewById(R.id.wishButton);
+//
+//                                    } catch (Exception e) {
+//                                        e.printStackTrace();
+//                                    }
+//                                }
+//                            } catch(Exception e) {
+//                                e.printStackTrace();
+//                                Toast.makeText(getActivity(), "Nothing Found", Toast.LENGTH_SHORT).show();
+//                            }
+
+//                        }
+//                    }, 5000);
+
+
+
+//                    Handler handler1 = new Handler();
+//                    handler1.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//
+//                        }
+//                    }, 7000);
+
+
+
 
 class WishAdapter extends ArrayAdapter{
 
@@ -179,7 +208,7 @@ class WishAdapter extends ArrayAdapter{
         super((Context) context,reousrce);
     }
 
-    public  void add(Books object){
+    public  void add(Book object){
         super.add(object);
         list.add(object);
     }
@@ -220,11 +249,11 @@ class WishAdapter extends ArrayAdapter{
         else {
             wishHolder = (Tab3WishlistActivity.WishHolder) row.getTag();
         }
-        Books books = (Books) getItem(position);
+        Book book = (Book) getItem(position);
         Log.d(LOG_TAG, "getting item " + position);
-        wishHolder.textView2.setText(books.getTitle());
-        wishHolder.editText.setText(books.getDescription());
-        Picasso.get().load(books.getImageUrl()).into(wishHolder.imageView);
+        wishHolder.textView2.setText(book.getTitle());
+        wishHolder.editText.setText(book.getDescription());
+        Picasso.get().load(book.getThumbnail()).into(wishHolder.imageView);
         wishHolder.updateWish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
