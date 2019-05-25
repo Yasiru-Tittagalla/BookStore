@@ -7,6 +7,8 @@ this activity tab will memorize it and remind on time
 
 package com.example.bookstore;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -17,14 +19,24 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -33,15 +45,25 @@ import java.util.Map;
 
 public class Tab3WishlistActivity extends Fragment {
 
+    WishAdapter wishAdapter;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static final String LOG_TAG = Tab3WishlistActivity.class.getSimpleName();
     public static List<Book> bookList = new ArrayList<Book>();
+    final Tab3WishlistActivity context = this;
+    public String id;
+    public EditText newWish;
+
+    private ArrayList<String> bookIds = new ArrayList<String>();
+    private ArrayList<String> bookWishes = new ArrayList<String>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tab3_wishlist, container, false);
 
+        final ListView listView = rootView.findViewById(R.id.listView);
+        bookIds.clear();
+        bookWishes.clear();
 
         db.collection("wishlist")
         .get()
@@ -60,10 +82,12 @@ public class Tab3WishlistActivity extends Fragment {
                                 if(entry.getValue().equals(LoginActivity.userEmail)){
                                     for(Map.Entry entry1 : objectMap.entrySet()){
                                         if(entry1.getKey().equals("bookId")) {
-                                                Log.d(LOG_TAG, "book id is " + entry1.getValue());
+//                                            Log.d(LOG_TAG, "book id is " + entry1.getValue());
+                                            bookIds.add(entry1.getValue().toString());
                                         }
                                         if(entry1.getKey().equals("wish")) {
-                                            Log.d(LOG_TAG, "wish is " + entry1.getValue());
+//                                            Log.d(LOG_TAG, "wish is " + entry1.getValue());
+                                            bookWishes.add(entry1.getValue().toString());
                                         }
                                     }
                                 }
@@ -73,55 +97,134 @@ public class Tab3WishlistActivity extends Fragment {
                 } else {
                     Log.d(LOG_TAG, "Error getting documents: ", task.getException());
                 }
-            }
-        });
 
-//        try {
-//            // get books from the api
-//            new FetchBooks().execute("id:J7ywAAAAIAAJ");
-//        } finally {
-//            RecyclerView myrv = (RecyclerView)getActivity().findViewById(R.id.wishlistrecycler);
-//            RecyclerViewAdapter myAdapter = new RecyclerViewAdapter(getContext(), FetchBooks.bookList);
-//            myrv.setLayoutManager(new GridLayoutManager(getContext(), 3));
-//            myrv.setAdapter(myAdapter);
-//        }
+//                Log.d(LOG_TAG, "tab3 running");
+                FetchBooks.wishList.clear();
 
-        runCallback(new Runnable()
-        {
-            @Override
-            public void run()
-            {
+                //send in the each book id of the wish list to fetch its data
+                wishAdapter = new WishAdapter(getContext(),R.layout.wish_row_layout);
+                listView.setAdapter(wishAdapter);
+                for (String bookId: bookIds ) {
+                    Log.d(LOG_TAG, "books to fetch" + bookId);
+                    new FetchBooks().execute("id:" + bookId, "wishList");
+                }
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        RecyclerView myrv = (RecyclerView)getActivity().findViewById(R.id.wishlistrecycler);
-                        RecyclerViewAdapter myAdapter = new RecyclerViewAdapter(getContext(), FetchBooks.wishList);
-                        myrv.setLayoutManager(new GridLayoutManager(getContext(), 3));
-                        myrv.setAdapter(myAdapter);
+                        int iterator = 0;
+                        for (Book wishBook : FetchBooks.wishList) {
+//                            Log.d(LOG_TAG, "books in the fetchbook.wishlist " +  wishBook.getTitle());
+                            wishBook.setWish(bookWishes.get(iterator));
+                            wishAdapter.add(wishBook);
+                            iterator++;
+                        }
                     }
-                }, 2000);
+                }, 4000);
+
+                Handler handler1 = new Handler();
+                handler1.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                }, 7000);
+
             }
         });
-
-
-
-//        // wait till the api call is over
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//            }
-//        }, 2000);
 
         return rootView;
     }
 
-    private void runCallback(Runnable callback)
-    {
-        new FetchBooks().execute("id", "wishlist");
-        callback.run();
+class WishAdapter extends ArrayAdapter{
+
+    List list = new ArrayList();
+    public WishAdapter(Context context, int reousrce){
+        super((Context) context,reousrce);
+    }
+
+    public  void add(Book object){
+        super.add(object);
+        list.add(object);
+    }
+    @Override
+    public int getCount() {
+
+        return list.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return list.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return 0;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+
+        View row;
+        row = convertView;
+        WishHolder wishHolder;
+        if(row == null){
+            LayoutInflater layoutInflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            row = layoutInflater.inflate(R.layout.wish_row_layout,parent,false);
+            wishHolder = new WishHolder();
+//            newWish = row.findViewById(R.id.editText);
+            wishHolder.textView2 = (TextView) row.findViewById(R.id.textView2);
+            wishHolder.wishUpdate = (EditText) row.findViewById(R.id.wishUpdate);
+            wishHolder.imageView = (ImageView) row.findViewById(R.id.imageView);
+            wishHolder.deleteWish = (Button) row.findViewById(R.id.deleteWish);
+            wishHolder.updateWish = (Button) row.findViewById(R.id.updateWish);
+            row.setTag(wishHolder);
+        }
+        else {
+            wishHolder = (Tab3WishlistActivity.WishHolder) row.getTag();
+        }
+        Book book = (Book) getItem(position);
+//        Log.d(LOG_TAG, "getting item " + position);
+        wishHolder.textView2.setText(book.getTitle());
+        wishHolder.wishUpdate.setText(book.getWish());
+        Picasso.get().load(book.getThumbnail()).into(wishHolder.imageView);
+        wishHolder.updateWish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Update the wish
+                Log.d(LOG_TAG, "udpated wish ");
+//                DocumentReference wishRef = db.collection("wishlist")
+//                        .document(/*BookId*/);
+//                wishRef.update("wish",newWish.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        if(task.isSuccessful()){
+//                            Toast.makeText(getContext(),"Updated Sucessfully",Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
+            }
+        });
+        wishHolder.deleteWish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Delete the wish
+                Log.d(LOG_TAG, "deleted wish ");
+//                DocumentReference wishRef = db.collection("wishlist")
+//                        .document(/*id of the wish*/);
+//                wishRef.delete();
+            }
+        });
+        return row;
+    }
+}
+
+    static class WishHolder{
+        TextView textView2;
+        ImageView imageView;
+        Button deleteWish,updateWish;
+        EditText wishUpdate;
     }
 
 }

@@ -58,7 +58,7 @@ public class Tab1HomeActivity extends Fragment {
                         myrv.setLayoutManager(new GridLayoutManager(getContext(), 3));
                         myrv.setAdapter(myAdapter);
                     }
-                }, 2000);
+                }, 5000);
             }
         });
 

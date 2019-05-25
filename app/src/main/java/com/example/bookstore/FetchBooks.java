@@ -26,6 +26,7 @@ public class FetchBooks extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... strings) {
         source = strings[1];
+        bookList = new ArrayList<Book>();
         return NetworkUtils.getBookInfo(strings[0]);
     }
 
@@ -38,7 +39,7 @@ public class FetchBooks extends AsyncTask<String, Void, String> {
             JSONObject jsonObject = new JSONObject(s);
             JSONArray itemsArray = jsonObject.getJSONArray("items");
 
-            Log.d(LOG_TAG, "item length is " + itemsArray.length());
+//            Log.d(LOG_TAG, "items are " + itemsArray);
 
             for (int i = 0; i < itemsArray.length(); i++) {
                 JSONObject book = itemsArray.getJSONObject(i);
@@ -68,7 +69,7 @@ public class FetchBooks extends AsyncTask<String, Void, String> {
                 if (title != null && thumb_url != null && webReaderLink != null
                     && description != null && bookId != null) {
 //                    Log.d(LOG_TAG, title + " " + thumb_url);
-                    if(source.equals("wishlist")){
+                    if(source.equals("wishList")){
                         wishList.add(new Book(title, thumb_url, webReaderLink, description, bookId));
                     } else {
                         bookList.add(new Book(title, thumb_url, webReaderLink, description, bookId));

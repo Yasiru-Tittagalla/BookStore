@@ -45,8 +45,9 @@
                 android:hint="email"
                 android:inputType="textEmailAddress"
                 android:paddingBottom="15dp"
-                android:textColorHint="@color/common_google_signin_btn_text_dark_pressed"
-                android:textColor="@color/common_google_signin_btn_text_dark_pressed" />
+                android:text="a@g.com"
+                android:textColor="@color/common_google_signin_btn_text_dark_pressed"
+                android:textColorHint="@color/common_google_signin_btn_text_dark_pressed" />
 
             <EditText
                 android:id="@+id/editTextPassword"
@@ -56,8 +57,9 @@
                 android:hint="password"
                 android:inputType="textPassword"
                 android:paddingBottom="15dp"
-                android:textColorHint="@color/common_google_signin_btn_text_dark_pressed"
-                android:textColor="@color/common_google_signin_btn_text_dark_pressed" />
+                android:text="asdasd"
+                android:textColor="@color/common_google_signin_btn_text_dark_pressed"
+                android:textColorHint="@color/common_google_signin_btn_text_dark_pressed" />
 
             <Button
                 android:id="@+id/buttonLogin"
