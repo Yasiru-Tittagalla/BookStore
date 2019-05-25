@@ -109,13 +109,21 @@ public class Tab3WishlistActivity extends Fragment {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d(LOG_TAG, "size is " + FetchBooks.wishList.size());
+                        int iterator = 0;
                         for (Book wishBook : FetchBooks.wishList) {
-                            Log.d(LOG_TAG, "book is " + wishBook.getTitle());
+//                            Log.d(LOG_TAG, "ids are " +  bookIds);
+//                            Log.d(LOG_TAG, "wishes are " +  bookWishes);
+                            wishBook.setWish(bookWishes.get(iterator));
+                            Log.d(LOG_TAG, "current wish is " +  bookWishes.get(iterator));
                             wishAdapter.add(wishBook);
+                            iterator++;
                         }
                     }
                 }, 4000);
+
+                for (String wish : bookWishes) {
+
+                }
 
                 Handler handler1 = new Handler();
                 handler1.postDelayed(new Runnable() {
@@ -170,7 +178,7 @@ class WishAdapter extends ArrayAdapter{
             wishHolder = new WishHolder();
 //            newWish = row.findViewById(R.id.editText);
             wishHolder.textView2 = (TextView) row.findViewById(R.id.textView2);
-            wishHolder.editText = (EditText) row.findViewById(R.id.wishUpdate);
+            wishHolder.wishUpdate = (EditText) row.findViewById(R.id.wishUpdate);
             wishHolder.imageView = (ImageView) row.findViewById(R.id.imageView);
             wishHolder.deleteWish = (Button) row.findViewById(R.id.deleteWish);
             wishHolder.updateWish = (Button) row.findViewById(R.id.updateWish);
@@ -180,33 +188,35 @@ class WishAdapter extends ArrayAdapter{
             wishHolder = (Tab3WishlistActivity.WishHolder) row.getTag();
         }
         Book book = (Book) getItem(position);
-        Log.d(LOG_TAG, "getting item " + position);
+//        Log.d(LOG_TAG, "getting item " + position);
         wishHolder.textView2.setText(book.getTitle());
-        wishHolder.editText.setText(book.getDescription());
+        wishHolder.wishUpdate.setText(book.getWish());
         Picasso.get().load(book.getThumbnail()).into(wishHolder.imageView);
         wishHolder.updateWish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Update the wish
-                DocumentReference wishRef = db.collection("wishlist")
-                        .document(/*BookId*/);
-                wishRef.update("wish",newWish.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful()){
-                            Toast.makeText(getContext(),"Updated Sucessfully",Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                Log.d(LOG_TAG, "udpated wish ");
+//                DocumentReference wishRef = db.collection("wishlist")
+//                        .document(/*BookId*/);
+//                wishRef.update("wish",newWish.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        if(task.isSuccessful()){
+//                            Toast.makeText(getContext(),"Updated Sucessfully",Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
             }
         });
         wishHolder.deleteWish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Delete the wish
-                DocumentReference wishRef = db.collection("wishlist")
-                        .document(/*id of the wish*/);
-                wishRef.delete();
+                Log.d(LOG_TAG, "deleted wish ");
+//                DocumentReference wishRef = db.collection("wishlist")
+//                        .document(/*id of the wish*/);
+//                wishRef.delete();
             }
         });
         return row;
@@ -217,7 +227,7 @@ class WishAdapter extends ArrayAdapter{
         TextView textView2;
         ImageView imageView;
         Button deleteWish,updateWish;
-        EditText editText;
+        EditText wishUpdate;
     }
 
 }

@@ -11,6 +11,7 @@ public class Book {
     private String webReaderLink;
     private String description;
     private String bookId;
+    private String wish;
 
     public Book(String title, String thumbnail, String webReaderLink, String description, String bookId){
         this.title = title;
@@ -20,17 +21,17 @@ public class Book {
         this.bookId = bookId;
     }
 
-    public String getTitle() {
-        return title;
-    }
+    public void setWish(String wish) { this.wish = wish; }
+
+    public String getWish(){ return wish; }
+
+    public String getTitle() { return title; }
 
     public String getAuthor() {
         return author;
     }
 
-    public String getThumbnail() {
-        return thumbnail;
-    }
+    public String getThumbnail() { return thumbnail; }
 
     public String getWebReaderLink() { return webReaderLink; }
 
