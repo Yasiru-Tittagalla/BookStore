@@ -30,6 +30,7 @@ public class NetworkUtils {
 
     // this is the method that will return the information of the book
     static String getBookInfo(String queryString) {
+        bookJSONString = null;
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
 

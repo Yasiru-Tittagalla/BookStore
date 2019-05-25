@@ -62,6 +62,8 @@ public class Tab3WishlistActivity extends Fragment {
         View rootView = inflater.inflate(R.layout.tab3_wishlist, container, false);
 
         final ListView listView = rootView.findViewById(R.id.listView);
+        bookIds.clear();
+        bookWishes.clear();
 
         db.collection("wishlist")
         .get()
@@ -96,13 +98,14 @@ public class Tab3WishlistActivity extends Fragment {
                     Log.d(LOG_TAG, "Error getting documents: ", task.getException());
                 }
 
-                FetchBooks.bookList = new ArrayList<Book>();
-                FetchBooks.wishList = new ArrayList<Book>();
+//                Log.d(LOG_TAG, "tab3 running");
+                FetchBooks.wishList.clear();
 
                 //send in the each book id of the wish list to fetch its data
                 wishAdapter = new WishAdapter(getContext(),R.layout.wish_row_layout);
                 listView.setAdapter(wishAdapter);
                 for (String bookId: bookIds ) {
+                    Log.d(LOG_TAG, "books to fetch" + bookId);
                     new FetchBooks().execute("id:" + bookId, "wishList");
                 }
                 Handler handler = new Handler();
@@ -111,19 +114,13 @@ public class Tab3WishlistActivity extends Fragment {
                     public void run() {
                         int iterator = 0;
                         for (Book wishBook : FetchBooks.wishList) {
-//                            Log.d(LOG_TAG, "ids are " +  bookIds);
-//                            Log.d(LOG_TAG, "wishes are " +  bookWishes);
+//                            Log.d(LOG_TAG, "books in the fetchbook.wishlist " +  wishBook.getTitle());
                             wishBook.setWish(bookWishes.get(iterator));
-                            Log.d(LOG_TAG, "current wish is " +  bookWishes.get(iterator));
                             wishAdapter.add(wishBook);
                             iterator++;
                         }
                     }
                 }, 4000);
-
-                for (String wish : bookWishes) {
-
-                }
 
                 Handler handler1 = new Handler();
                 handler1.postDelayed(new Runnable() {

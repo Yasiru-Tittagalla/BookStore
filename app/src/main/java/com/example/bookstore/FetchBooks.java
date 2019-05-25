@@ -26,7 +26,7 @@ public class FetchBooks extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... strings) {
         source = strings[1];
-
+        bookList = new ArrayList<Book>();
         return NetworkUtils.getBookInfo(strings[0]);
     }
 
@@ -39,7 +39,7 @@ public class FetchBooks extends AsyncTask<String, Void, String> {
             JSONObject jsonObject = new JSONObject(s);
             JSONArray itemsArray = jsonObject.getJSONArray("items");
 
-            Log.d(LOG_TAG, "items are " + itemsArray);
+//            Log.d(LOG_TAG, "items are " + itemsArray);
 
             for (int i = 0; i < itemsArray.length(); i++) {
                 JSONObject book = itemsArray.getJSONObject(i);
