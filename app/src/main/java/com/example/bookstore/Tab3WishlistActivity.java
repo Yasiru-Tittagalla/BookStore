@@ -170,7 +170,7 @@ class WishAdapter extends ArrayAdapter{
 
         View row;
         row = convertView;
-        WishHolder wishHolder;
+        final WishHolder wishHolder;
         if(row == null){
             LayoutInflater layoutInflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             row = layoutInflater.inflate(R.layout.wish_row_layout,parent,false);
@@ -186,26 +186,36 @@ class WishAdapter extends ArrayAdapter{
         else {
             wishHolder = (Tab3WishlistActivity.WishHolder) row.getTag();
         }
-        Book book = (Book) getItem(position);
+        final Book book = (Book) getItem(position);
 //        Log.d(LOG_TAG, "getting item " + position);
         wishHolder.textView2.setText(book.getTitle());
         wishHolder.wishUpdate.setText(book.getWish());
+        wishHolder.wishUpdate.setSelectAllOnFocus(true);
+//        wishHolder.wishUpdate.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                wishHolder.wishUpdate.setText("");
+//            }
+//        });
+
         Picasso.get().load(book.getThumbnail()).into(wishHolder.imageView);
+
+        // add a check if the same text is updated and alert user
         wishHolder.updateWish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Update the wish
-                Log.d(LOG_TAG, "udpated wish ");
-//                DocumentReference wishRef = db.collection("wishlist")
-//                        .document(/*BookId*/);
-//                wishRef.update("wish",newWish.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        if(task.isSuccessful()){
-//                            Toast.makeText(getContext(),"Updated Sucessfully",Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                });
+                DocumentReference wishRef = db.collection("wishlist")
+                        .document(LoginActivity.userEmail + "_" + book.getBookId());
+                wishRef.update("wish", wishHolder.wishUpdate.getText().toString())
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            Toast.makeText(getContext(),"Updated Successfully",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
         wishHolder.deleteWish.setOnClickListener(new View.OnClickListener() {
@@ -213,9 +223,19 @@ class WishAdapter extends ArrayAdapter{
             public void onClick(View v) {
                 //Delete the wish
                 Log.d(LOG_TAG, "deleted wish ");
-//                DocumentReference wishRef = db.collection("wishlist")
-//                        .document(/*id of the wish*/);
-//                wishRef.delete();
+                DocumentReference wishRef = db.collection("wishlist")
+                        .document(LoginActivity.userEmail + "_" + book.getBookId());
+                wishRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            Toast.makeText(getContext(),"Wish Deleted",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                // reaload the tab
+                getFragmentManager().beginTransaction().detach(context).attach(context).commit();
             }
         });
         return row;
