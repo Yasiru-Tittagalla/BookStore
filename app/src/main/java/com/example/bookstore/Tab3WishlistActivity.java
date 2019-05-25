@@ -62,6 +62,8 @@ public class Tab3WishlistActivity extends Fragment {
         View rootView = inflater.inflate(R.layout.tab3_wishlist, container, false);
 
         final ListView listView = rootView.findViewById(R.id.listView);
+
+        // clearing the lists, so that data wont duplicate
         bookIds.clear();
         bookWishes.clear();
 
