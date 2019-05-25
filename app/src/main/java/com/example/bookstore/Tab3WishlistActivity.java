@@ -131,76 +131,6 @@ public class Tab3WishlistActivity extends Fragment {
         return rootView;
     }
 
-//    private void runCallback(String bookId, Runnable callback)
-//    {
-//        new FetchBooks().execute("id:" + bookId, "wishList");
-//        callback.run();
-//    }
-
-
-
-//                    NetworkUtils.bookJSONString = "";
-//                    Log.d(LOG_TAG, "book id is " + bookId);
-//                    new FetchBooks().execute("id:" + bookId, "search");
-//                     wait till the api call is over
-//                    Handler handler = new Handler();
-//                    handler.postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//
-//                            String Books = NetworkUtils.bookJSONString;
-//                            Log.d(LOG_TAG, "string is " + NetworkUtils.bookJSONString + "asdf");
-
-//                            try {
-//                                JSONObject jsonObject = new JSONObject(Books);
-//                                JSONArray itemsArray = jsonObject.getJSONArray("items");
-//
-//                                for (int i = 0; i < itemsArray.length(); i++) {
-//                                    JSONObject book = itemsArray.getJSONObject(i);
-//                                    String title = null;
-//                                    String imageUrl =null;
-//                                    String wish = null;
-//                                    JSONObject volumeInfo = book.getJSONObject("volumeInfo");
-//
-//
-//                                    try {
-//                                        title = volumeInfo.getString("title");
-//                                        wish = volumeInfo.getString("description");
-//                                        id = book.getString("id");
-//                                        JSONObject imageObject = volumeInfo.optJSONObject("imageLinks");
-//                                        imageUrl = imageObject.getString("thumbnail");
-//
-//                                        Books books = new Books(title,wish,imageUrl);
-//                                        wishAdapter.add(books);
-//                                        Log.d(LOG_TAG, "wishadapter is " + wishAdapter.getCount());
-//
-////                                wishButton = (Button) rootView.findViewById(R.id.wishButton);
-//
-//                                    } catch (Exception e) {
-//                                        e.printStackTrace();
-//                                    }
-//                                }
-//                            } catch(Exception e) {
-//                                e.printStackTrace();
-//                                Toast.makeText(getActivity(), "Nothing Found", Toast.LENGTH_SHORT).show();
-//                            }
-
-//                        }
-//                    }, 5000);
-
-
-
-//                    Handler handler1 = new Handler();
-//                    handler1.postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//
-//                        }
-//                    }, 7000);
-
-
-
-
 class WishAdapter extends ArrayAdapter{
 
     List list = new ArrayList();
@@ -238,9 +168,9 @@ class WishAdapter extends ArrayAdapter{
             LayoutInflater layoutInflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             row = layoutInflater.inflate(R.layout.wish_row_layout,parent,false);
             wishHolder = new WishHolder();
-            newWish = row.findViewById(R.id.editText);
+//            newWish = row.findViewById(R.id.editText);
             wishHolder.textView2 = (TextView) row.findViewById(R.id.textView2);
-            wishHolder.editText = (EditText) row.findViewById(R.id.editText);
+            wishHolder.editText = (EditText) row.findViewById(R.id.wishUpdate);
             wishHolder.imageView = (ImageView) row.findViewById(R.id.imageView);
             wishHolder.deleteWish = (Button) row.findViewById(R.id.deleteWish);
             wishHolder.updateWish = (Button) row.findViewById(R.id.updateWish);
