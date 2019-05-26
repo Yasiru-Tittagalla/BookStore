@@ -46,7 +46,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
+/** In this activity we are searching for the books and displaying them
+  in list so that the user can wishlist them for feature reading  **/
 public class Tab2SearchActivity extends Fragment {
 
     private EditText searchText;
@@ -99,10 +100,13 @@ searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                     @Override
                     public void run() {
 
+                        //fetch the books information into a string
                         String Books = NetworkUtils.bookJSONString;
 
                         try {
+                            //convert to jsonobject
                             JSONObject jsonObject = new JSONObject(Books);
+                            //create a json array
                             JSONArray itemsArray = jsonObject.getJSONArray("items");
                             bookAdapter = new BookAdapter(getContext(),R.layout.row_layout);
                             listView.setAdapter(bookAdapter);
@@ -117,20 +121,20 @@ searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
 
                                 try {
+                                    //set the values into view
                                     title = volumeInfo.getString("title");
                                     description = volumeInfo.getString("description");
                                     id = book.getString("id");
                                     JSONObject imageObject = volumeInfo.optJSONObject("imageLinks");
                                     imageUrl = imageObject.getString("thumbnail");
 
+                                    //create the object with setted values
                                     Books books = new Books(title,description,imageUrl);
                                     bookAdapter.add(books);
-//                                wishButton = (Button) rootView.findViewById(R.id.wishButton);
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-//                                    progressBar.setVisibility(View.GONE);
 
                             }
                         } catch(Exception e) {

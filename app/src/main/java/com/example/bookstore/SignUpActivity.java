@@ -22,7 +22,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-
+/**user who does not have an account in the service
+ * can create their account and it's authenticated with google firebase
+ */
 public class SignUpActivity extends AppCompatActivity {
 
     EditText editTextPassword, editTextUserName;

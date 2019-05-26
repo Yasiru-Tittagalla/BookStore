@@ -40,6 +40,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 /**
  * A login screen that offers login via email/password.
+ * or user can choose to sign in with their google accounts
  */
 public class LoginActivity extends AppCompatActivity  implements OnClickListener{
 
@@ -127,11 +128,7 @@ public class LoginActivity extends AppCompatActivity  implements OnClickListener
                 GoogleSignInAccount account = task.getResult();
                 firebaseAuthWithGoogle(account);
             }
-//            catch (ApiException e){
-//                Log.w(TAG,"Error when Signing in with Google",e);
-//            }
 
-//        }
 
     }
 
@@ -153,15 +150,6 @@ public class LoginActivity extends AppCompatActivity  implements OnClickListener
                     }
                 });
     }
-
-    /*private void doLogin() {
-
-        switch (v.getId()){
-            case R.id.textViewSignup:
-                startActivity(new Intent(this, SignUpActivity.class));
-            break;
-        }
-    }*/
 
 
     // this is the login method which validates username and password

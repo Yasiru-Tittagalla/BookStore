@@ -20,7 +20,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
+/** This is the dialog that pops up when the user tries to
+ * enter a book into his/her wish list this will take users
+ * wish and save the book in the database with relevant info
+ */
 public class WishListDialog extends Activity {
 
     String userName = null;
@@ -35,6 +38,7 @@ public class WishListDialog extends Activity {
 
         super.onCreate(savedInstanceState);
         Intent i1 = getIntent();
+        //get values from the intent
         Bundle extra = i1.getExtras();
         userName =extra.getString("userName");
         ISBN =extra.getString("ID");
@@ -66,10 +70,8 @@ public class WishListDialog extends Activity {
 
                 final String wish = userInput.getText().toString();
                 if (!wish.isEmpty()) {
-
-//                    Toast.makeText(getApplicationContext(),"Pleas Enter A Wish Message"+wish+" "+userName+" "+ISBN,Toast.LENGTH_SHORT).show();
+                    //get the user logged in
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
                    String userEmail = user.getEmail();
                     saveToDatabase(userEmail,ISBN,wish);
                     dialog.dismiss();
@@ -83,12 +85,13 @@ public class WishListDialog extends Activity {
 
     private void saveToDatabase(String userName, String isbn, String wishMessage) {
 
+        //create the firebase ref
         DocumentReference newUserRef = db.collection("wishlist")
                 .document(userName + "_" + isbn);
+        //create the wish objcet with values
         userWishList u1 = new userWishList(userName,isbn,wishMessage);
-//        u1.setUserName(userName);
-//        u1.setBookId(isbn);
-//        u1.setWish(wishMessage);
+
+        //save to the database
         newUserRef.set(u1).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
