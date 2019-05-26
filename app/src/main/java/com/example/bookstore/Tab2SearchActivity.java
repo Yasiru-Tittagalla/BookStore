@@ -19,9 +19,11 @@ import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -65,93 +67,97 @@ public class Tab2SearchActivity extends Fragment {
 
         final ListView listView = rootView.findViewById(R.id.listView);
         searchText = (EditText)rootView.findViewById(R.id.editText2);
-        searchButton = (Button)rootView.findViewById(R.id.button);
 
 //         progressBar = rootView.findViewById(R.id.progressbar);
+searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if(actionId == EditorInfo.IME_ACTION_SEARCH) {
+            if (getActivity().getCurrentFocus() != null) {
+                InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                        inputMethodManager.HIDE_NOT_ALWAYS);
+            }
 
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // hide the keyboard after searching
-                if (getActivity().getCurrentFocus() != null) {
-                    InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
-                            inputMethodManager.HIDE_NOT_ALWAYS);
-                }
-
-                // check network state
-                //loading bar while data are being fetched
+            // check network state
+            //loading bar while data are being fetched
 //                progressBar.setVisibility(View.VISIBLE);
-                ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-                if(networkInfo == null || !networkInfo.isConnected()) {
+            ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            if(networkInfo == null || !networkInfo.isConnected()) {
 //                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getActivity(), "Please check the network connection", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                Toast.makeText(getActivity(), "Please check the network connection", Toast.LENGTH_SHORT).show();
+                return false;
+            }
 
-                // to search the book
-                String text = searchText.getText().toString();
-                if(!text.isEmpty()){
-                    new FetchBooks().execute(text, "search");
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
+            // to search the book
+            String text = searchText.getText().toString();
+            if(!text.isEmpty()){
+                new FetchBooks().execute(text, "search");
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
 
-                    String Books = NetworkUtils.bookJSONString;
+                        String Books = NetworkUtils.bookJSONString;
 
-                    try {
-                        JSONObject jsonObject = new JSONObject(Books);
-                        JSONArray itemsArray = jsonObject.getJSONArray("items");
-                         bookAdapter = new BookAdapter(getContext(),R.layout.row_layout);
-                        listView.setAdapter(bookAdapter);
+                        try {
+                            JSONObject jsonObject = new JSONObject(Books);
+                            JSONArray itemsArray = jsonObject.getJSONArray("items");
+                            bookAdapter = new BookAdapter(getContext(),R.layout.row_layout);
+                            listView.setAdapter(bookAdapter);
 //                        Log.d(LOG_TAG, "item length is " + itemsArray.length());
 
-                        for (int i = 0; i < itemsArray.length(); i++) {
-                            JSONObject book = itemsArray.getJSONObject(i);
-                            String title = null;
-                            String imageUrl =null;
-                            String description = null;
-                            JSONObject volumeInfo = book.getJSONObject("volumeInfo");
+                            for (int i = 0; i < itemsArray.length(); i++) {
+                                JSONObject book = itemsArray.getJSONObject(i);
+                                String title = null;
+                                String imageUrl =null;
+                                String description = null;
+                                JSONObject volumeInfo = book.getJSONObject("volumeInfo");
 
 
-                            try {
-                                title = volumeInfo.getString("title");
-                                description = volumeInfo.getString("description");
-                                id = book.getString("id");
-                                JSONObject imageObject = volumeInfo.optJSONObject("imageLinks");
+                                try {
+                                    title = volumeInfo.getString("title");
+                                    description = volumeInfo.getString("description");
+                                    id = book.getString("id");
+                                    JSONObject imageObject = volumeInfo.optJSONObject("imageLinks");
                                     imageUrl = imageObject.getString("thumbnail");
 
                                     Books books = new Books(title,description,imageUrl);
                                     bookAdapter.add(books);
 //                                wishButton = (Button) rootView.findViewById(R.id.wishButton);
 
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
 //                                    progressBar.setVisibility(View.GONE);
 
+                            }
+                        } catch(Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(getActivity(), "Nothing Found", Toast.LENGTH_SHORT).show();
                         }
-                    } catch(Exception e) {
-                        e.printStackTrace();
-                        Toast.makeText(getActivity(), "Nothing Found", Toast.LENGTH_SHORT).show();
+
                     }
-
-                        }
-                    }, 5000);
+                }, 5000);
 
 
-                    showInList();
-                } else {
-                    Toast.makeText(getActivity(), "Please enter a book name", Toast.LENGTH_SHORT).show();
-                }
-
+            } else {
+                Toast.makeText(getActivity(), "Please enter a book name", Toast.LENGTH_SHORT).show();
             }
+            return true;
+        }
+        return false;
+        }
 
-            private void showInList() {
-            }
+//   searchButton.setOnClickListener(new View.OnClickListener() {
+
+//            @Override
+//            public void onClick(View v) {
+
+                // hide the keyboard after searching
+
+
         });
 
         return rootView;
