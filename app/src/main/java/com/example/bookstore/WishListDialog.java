@@ -97,6 +97,7 @@ public class WishListDialog extends Activity {
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){
                     Toast.makeText(getApplicationContext(),"Added To Wish List",Toast.LENGTH_SHORT).show();
+                    finish();
 
                 }
             }
